@@ -92,6 +92,31 @@ guestCards.forEach(card => {
     card.style.setProperty('--tilt-y', '0deg');
   });
 });
+const winnersTrack = document.querySelector('.winners-track');
+const winnersTabs = [...document.querySelectorAll('.winners-year')];
+if (winnersTrack && winnersTabs.length) {
+  const winnersPanels = [...winnersTrack.children];
+  function setActiveWinnersTab(index) {
+    winnersTabs.forEach((tab, i) => {
+      const active = i === index;
+      tab.classList.toggle('is-active', active);
+      tab.setAttribute('aria-selected', String(active));
+    });
+  }
+  winnersTabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => {
+      winnersPanels[index]?.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+      setActiveWinnersTab(index);
+    });
+  });
+  if ('IntersectionObserver' in window) {
+    const winnersObserver = new IntersectionObserver(entries => {
+      const visible = entries.find(entry => entry.isIntersecting);
+      if (visible) setActiveWinnersTab(winnersPanels.indexOf(visible.target));
+    }, { root: winnersTrack, threshold: 0.6 });
+    winnersPanels.forEach(panel => winnersObserver.observe(panel));
+  }
+}
 let scrollFrame = 0;
 window.addEventListener('scroll', () => {
   if (!canAnimate() || scrollFrame) return;
