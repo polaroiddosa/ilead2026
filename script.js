@@ -117,6 +117,32 @@ if (winnersTrack && winnersTabs.length) {
     winnersPanels.forEach(panel => winnersObserver.observe(panel));
   }
 }
+const countdown = document.querySelector('.countdown');
+if (countdown) {
+  const target = new Date('2026-10-01T09:00:00+05:30').getTime();
+  const cd = {
+    d: countdown.querySelector('[data-cd="d"]'),
+    h: countdown.querySelector('[data-cd="h"]'),
+    m: countdown.querySelector('[data-cd="m"]'),
+    s: countdown.querySelector('[data-cd="s"]'),
+  };
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function tickCountdown() {
+    const diff = target - Date.now();
+    if (diff <= 0) {
+      cd.d.textContent = cd.h.textContent = cd.m.textContent = cd.s.textContent = '00';
+      clearInterval(countdownTimer);
+      return;
+    }
+    const totalSeconds = Math.floor(diff / 1000);
+    cd.d.textContent = pad(Math.floor(totalSeconds / 86400));
+    cd.h.textContent = pad(Math.floor((totalSeconds % 86400) / 3600));
+    cd.m.textContent = pad(Math.floor((totalSeconds % 3600) / 60));
+    cd.s.textContent = pad(totalSeconds % 60);
+  }
+  tickCountdown();
+  const countdownTimer = setInterval(tickCountdown, 1000);
+}
 let scrollFrame = 0;
 window.addEventListener('scroll', () => {
   if (!canAnimate() || scrollFrame) return;
