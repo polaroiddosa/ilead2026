@@ -117,6 +117,64 @@ if (winnersTrack && winnersTabs.length) {
     winnersPanels.forEach(panel => winnersObserver.observe(panel));
   }
 }
+const countUps = [...document.querySelectorAll('[data-count-to]')];
+if (countUps.length && 'IntersectionObserver' in window) {
+  const countObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      countObserver.unobserve(entry.target);
+      const el = entry.target;
+      const target = parseInt(el.dataset.countTo, 10);
+      if (motion.matches) { el.textContent = target; return; }
+      const duration = 1200;
+      const start = performance.now();
+      function step(now) {
+        const progress = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(eased * target);
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }, { threshold: 0.4 });
+  countUps.forEach(el => countObserver.observe(el));
+}
+const lightbox = document.getElementById('lightbox');
+const momentsPhotos = [...document.querySelectorAll('.moments-grid figure:not(.moments-video) img')];
+if (lightbox && momentsPhotos.length) {
+  const lbImg = lightbox.querySelector('.lightbox-img');
+  let lbIndex = 0;
+  function renderLightbox() {
+    const img = momentsPhotos[lbIndex];
+    lbImg.src = img.currentSrc || img.src;
+    lbImg.alt = img.alt;
+  }
+  function openLightbox(index) {
+    lbIndex = index;
+    renderLightbox();
+    lightbox.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    lightbox.hidden = true;
+    document.body.style.overflow = '';
+  }
+  function stepLightbox(delta) {
+    lbIndex = (lbIndex + delta + momentsPhotos.length) % momentsPhotos.length;
+    renderLightbox();
+  }
+  momentsPhotos.forEach((img, i) => img.addEventListener('click', () => openLightbox(i)));
+  lightbox.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+  lightbox.querySelector('.lightbox-prev').addEventListener('click', () => stepLightbox(-1));
+  lightbox.querySelector('.lightbox-next').addEventListener('click', () => stepLightbox(1));
+  lightbox.addEventListener('click', event => { if (event.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', event => {
+    if (lightbox.hidden) return;
+    if (event.key === 'Escape') closeLightbox();
+    else if (event.key === 'ArrowLeft') stepLightbox(-1);
+    else if (event.key === 'ArrowRight') stepLightbox(1);
+  });
+}
 const countdown = document.querySelector('.countdown');
 if (countdown) {
   const target = new Date('2026-10-01T09:00:00+05:30').getTime();
