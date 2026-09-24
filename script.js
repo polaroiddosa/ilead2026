@@ -201,6 +201,18 @@ if (countdown) {
   tickCountdown();
   const countdownTimer = setInterval(tickCountdown, 1000);
 }
+const collegeList = document.getElementById('college-list');
+const collegeToggle = document.getElementById('college-toggle');
+if (collegeList && collegeToggle) {
+  const totalColleges = collegeList.children.length;
+  collegeToggle.addEventListener('click', () => {
+    const expanded = collegeList.classList.toggle('is-expanded');
+    collegeToggle.setAttribute('aria-expanded', String(expanded));
+    collegeToggle.innerHTML = expanded
+      ? 'Show fewer colleges <span aria-hidden="true">↑</span>'
+      : `Show all ${totalColleges} colleges <span aria-hidden="true">↓</span>`;
+  });
+}
 let scrollFrame = 0;
 window.addEventListener('scroll', () => {
   if (!canAnimate() || scrollFrame) return;
