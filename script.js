@@ -204,7 +204,7 @@ if (countdown) {
 const collegeList = document.getElementById('college-list');
 const collegeToggle = document.getElementById('college-toggle');
 if (collegeList && collegeToggle) {
-  const totalColleges = collegeList.children.length;
+  const totalColleges = collegeList.querySelectorAll('tbody tr').length;
   collegeToggle.addEventListener('click', () => {
     const expanded = collegeList.classList.toggle('is-expanded');
     collegeToggle.setAttribute('aria-expanded', String(expanded));
