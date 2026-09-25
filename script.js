@@ -124,7 +124,7 @@ if (countUps.length && 'IntersectionObserver' in window) {
       const el = entry.target;
       const target = parseInt(el.dataset.countTo, 10);
       if (motion.matches) { el.textContent = target; return; }
-      const duration = 1200;
+      const duration = 2000;
       const start = performance.now();
       function step(now) {
         const progress = Math.min(1, (now - start) / duration);
