@@ -24,12 +24,9 @@ const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const finePointer = window.matchMedia('(pointer: fine)');
 const hero = document.querySelector('.hero');
 const root = document.documentElement;
-const motionButton = document.querySelector('.motion-toggle');
 const crewArt = document.querySelector('.crew-art');
 const guestCards = [...document.querySelectorAll('[data-depth]')];
-let userPaused = false;
-try { userPaused = localStorage.getItem('ilead-motion-paused') === 'true'; } catch {}
-const canAnimate = () => !motion.matches && !userPaused && !document.hidden;
+const canAnimate = () => !motion.matches && !document.hidden;
 function resetDepth() {
   hero.style.setProperty('--pointer-x', '0px');
   hero.style.setProperty('--pointer-y', '0px');
@@ -44,18 +41,8 @@ function updateMotion() {
   const enabled = canAnimate();
   root.classList.toggle('motion-enabled', enabled);
   root.classList.toggle('motion-paused', !enabled);
-  motionButton.hidden = false;
-  motionButton.disabled = motion.matches;
-  motionButton.setAttribute('aria-pressed', String(userPaused || motion.matches));
-  motionButton.querySelector('.motion-label').textContent = motion.matches ? 'Motion reduced' : userPaused ? 'Enable motion' : 'Pause motion';
-  motionButton.querySelector('.motion-icon').textContent = motion.matches || userPaused ? '▷' : 'Ⅱ';
   if (!enabled) resetDepth();
 }
-motionButton.addEventListener('click', () => {
-  userPaused = !userPaused;
-  try { localStorage.setItem('ilead-motion-paused', String(userPaused)); } catch {}
-  updateMotion();
-});
 motion.addEventListener('change', updateMotion);
 document.addEventListener('visibilitychange', updateMotion);
 const animatedSections = [hero, document.querySelector('.guests')];
