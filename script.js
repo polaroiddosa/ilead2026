@@ -92,6 +92,17 @@ guestCards.forEach(card => {
     card.style.setProperty('--tilt-y', '0deg');
   });
 });
+const heroStat = document.querySelector('.hero-stat');
+if (heroStat) {
+  heroStat.addEventListener('pointermove', event => {
+    if (!finePointer.matches) return;
+    const bounds = heroStat.getBoundingClientRect();
+    const x = ((event.clientX - bounds.left) / bounds.width) * 100;
+    const y = ((event.clientY - bounds.top) / bounds.height) * 100;
+    heroStat.style.setProperty('--glow-x', `${x}%`);
+    heroStat.style.setProperty('--glow-y', `${y}%`);
+  }, { passive: true });
+}
 const winnersTrack = document.querySelector('.winners-track');
 const winnersTabs = [...document.querySelectorAll('.winners-year')];
 if (winnersTrack && winnersTabs.length) {
